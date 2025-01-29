@@ -1,0 +1,28 @@
+workflows:
+  flutter_build_and_distribute:
+    name: Flutter Build and Distribute
+    max_build_duration: 60
+    triggering:
+       events:
+          - push
+          - pull_request
+    scripts:
+      - name: Build for iOS
+        script: |
+          flutter build ios
+          
+      - name: Install Firebase CLI
+        script: |
+          npm install -g firebase-tools
+
+      - name: Upload APK to Firebase
+        script: |
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+            --app 1:594502835954:ios:79d3b7f2656fa5ee103a6b \
+            --groups testers \
+            --token 1//0gTtjiTqc-KlvCgYIARAAGBASNwF-L9IrbRdGuvJE5BUSUmvZ3ysogCP2coMr1H6Kf7GEzVGxGn46fnEc_M6BoWTJfZgh98f09Gg
+
+    # 构建产物
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+      - build/ios/ipa/Runner.ipa
